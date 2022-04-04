@@ -1,4 +1,8 @@
 # CS5610-Project-Server
-
-## Endpoints:
-* Hello world: ```/hello```
+## API Endpoint
+### users
+* GET ```/api/users``` Find all users
+* GET ```/api/users/:uid``` Find user by id
+* POST ```/api/users``` Create user
+* PUT ```/api/users/:uid``` Update user
+* DELETE ```/api/users/:uid``` Delete user
