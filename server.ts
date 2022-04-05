@@ -6,6 +6,7 @@ import {ErrorHandler} from "./errors/ErrorHandler";
 import UserController from "./controllers/UserController";
 import MovieController from "./controllers/MovieController";
 import AuthController from "./controllers/AuthController";
+import MovieListController from "./controllers/MovieListController";
 const cors = require("cors");
 const session = require("express-session");
 
@@ -39,6 +40,7 @@ app.get("/", (req: Request, res: Response) => res.send("Welcome to CS5610!"));
 const userController = UserController.getInstance(app);
 const movieController = MovieController.getInstance(app);
 const authController = AuthController.getInstance(app);
+const movieListController = MovieListController.getInstance(app);
 
 app.use(LogError);
 app.use(ErrorHandler);

@@ -2,7 +2,6 @@ import {Express, NextFunction, Request, Response} from "express";
 import {
     IncorrectCredentialError,
     InvalidInputError,
-    NoSuchUserError,
     NoUserLoggedInError,
     UserAlreadyExistsError
 } from "../errors/CustomErrors";
