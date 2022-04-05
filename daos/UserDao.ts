@@ -24,6 +24,11 @@ class UserDao {
         return UserModel.findOne({_id: uid});
     }
 
+    findUserByUsername = async (uname: string): Promise<User | null> => {
+        return UserModel.findOne({username: uname});
+    }
+
+
     deleteUserById = async (uid: string): Promise<any> => {
         return UserModel.deleteOne({_id: uid});
     }
