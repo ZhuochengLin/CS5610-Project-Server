@@ -30,4 +30,34 @@ export class IncorrectCredentialError extends Error {
 
 }
 
-export class InvalidInputError extends Error {}
+export class InvalidInputError extends Error {
+
+    constructor(msg: string = "Received invalid input.") {
+        super(msg);
+    }
+
+}
+
+export class EmptyMovieListNameError extends Error {
+
+    constructor() {
+        super("Received empty movie list name.");
+    }
+
+}
+
+export class MovieListAlreadyExistsError extends Error {
+
+    constructor() {
+        super("Movie list already exists.");
+    }
+
+}
+
+export class NoSuchMovieListError extends Error {
+
+    constructor() {
+        super("No such movie list.");
+    }
+
+}
