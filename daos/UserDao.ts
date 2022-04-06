@@ -1,6 +1,9 @@
 import UserModel from "../mongoose/UserModel";
 import User from "../models/User";
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 class UserDao {
 
     private static userDao: UserDao | null = null;
@@ -13,6 +16,8 @@ class UserDao {
     }
 
     createUser = async (user: User): Promise<User> => {
+        const password = user.password;
+        user.password = await bcrypt.hash(password, saltRounds);
         return UserModel.create(user);
     }
 
@@ -29,7 +34,7 @@ class UserDao {
     }
 
 
-    deleteUserById = async (uid: string): Promise<any> => {
+    deleteUser = async (uid: string): Promise<any> => {
         return UserModel.deleteOne({_id: uid});
     }
 

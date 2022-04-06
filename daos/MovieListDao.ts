@@ -15,8 +15,8 @@ class MovieListDao {
     private constructor() {
     }
 
-    createMovieList = async (uid: string, listName: string, movies: string[]): Promise<MovieList> => {
-        return MovieListModel.create({ownedBy: uid, listName: listName, movies: this.getUniqueMovies(movies)});
+    createMovieList = async (movieList: MovieList): Promise<MovieList> => {
+        return MovieListModel.create(movieList);
     }
 
     findMovieListByName = async (listName: string): Promise<MovieList | null> => {
@@ -31,10 +31,6 @@ class MovieListDao {
         return MovieListModel.findOne({_id: lid});
     }
 
-    findMovieListByListName = async (lname: string): Promise<MovieList | null> => {
-        return MovieListModel.findOne({listName: lname});
-    }
-
     deleteMovieListById = async (lid: string): Promise<any> => {
         return MovieListModel.deleteOne({_id: lid});
     }
@@ -43,16 +39,16 @@ class MovieListDao {
         return MovieListModel.deleteMany({});
     }
 
-    updateMovieListById = async (lid: string, movies: string[]): Promise<any> => {
-        return MovieListModel.updateOne({_id: lid}, {$set: {movies: this.getUniqueMovies(movies)}});
+    updateMovieListById = async (lid: string, movieList: MovieList): Promise<any> => {
+        return MovieListModel.updateOne({_id: lid}, {$set: movieList});
     }
 
-    findMovieListsOwnedByUser = async (uid: string): Promise<MovieList[]> => {
+    findAllMovieListsOwnedByUser = async (uid: string): Promise<MovieList[]> => {
         return MovieListModel.find({ownedBy: uid});
     }
 
-    private getUniqueMovies = (movies: string[]) => {
-        return [...new Set(movies.map((m: any) => m + ""))];
+    findMovieListOwnedByUser = async (uid: string, lid: string): Promise<MovieList | null> => {
+        return MovieListModel.findOne({ownedBy: uid, _id: lid});
     }
 
 }

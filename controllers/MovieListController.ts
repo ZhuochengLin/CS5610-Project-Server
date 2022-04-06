@@ -3,9 +3,11 @@ import {Express, NextFunction, Request, Response} from "express";
 import {
     EmptyMovieListNameError,
     InvalidInputError,
-    MovieListAlreadyExistsError,
+    MovieListAlreadyExistsError, NoPermissionError,
     NoSuchMovieListError
 } from "../errors/CustomErrors";
+import AuthenticationController from "./AuthenticationController";
+import {MY} from "../utils/constants";
 
 class MovieListController {
 
@@ -18,17 +20,30 @@ class MovieListController {
             app.post("/api/users/:uid/movie-lists", MovieListController.movieListController.createMovieList);
             app.get("/api/movie-lists", MovieListController.movieListController.findAllMovieLists);
             app.get("/api/movie-lists/:lid", MovieListController.movieListController.findMovieListById);
-            app.get("/api/users/:uid/movie-lists", MovieListController.movieListController.findMovieListsOwnedByUser);
+            app.get("/api/users/:uid/movie-lists", MovieListController.movieListController.findAllMovieListsOwnedByUser);
             app.get("/api/movie-lists/name/:lname", MovieListController.movieListController.findMovieListByListName);
             app.delete("/api/movie-lists", MovieListController.movieListController.deleteAllMovieLists);
             app.delete("/api/movie-lists/:lid", MovieListController.movieListController.deleteMovieListById);
-            app.put("/api/movie-lists/:lid", MovieListController.movieListController.updateMovieListById);
+            app.put("/api/users/:uid/movie-lists/:lid", MovieListController.movieListController.updateMovieListById);
         }
         return MovieListController.movieListController;
     }
 
     createMovieList = async (req: Request, res: Response, next: NextFunction) => {
-        // TODO: authentication
+        // authentication
+        let userId, profile;
+        try {
+            profile = AuthenticationController.checkLogin(req);
+            userId = await AuthenticationController.getUserId(req, profile);
+        } catch (e) {
+            next(e)
+            return;
+        }
+        if (userId === MY) {
+            next(new InvalidInputError("Admin account cannot create movie lists"))
+            return;
+        }
+        // get list info
         const data = req.body;
         if (!data.listName) {
             next(new EmptyMovieListNameError());
@@ -40,9 +55,10 @@ class MovieListController {
             next(new MovieListAlreadyExistsError);
             return;
         }
-        const movies = data.movies ? data.movies : [];
+        const movies = data.movies ? this.getUniqueMovies(data.movies) : [];
+        const movieList = {ownedBy: userId, listName: listName, movies: movies};
         // @ts-ignore
-        MovieListController.movieListDao.createMovieList(req.params.uid, listName, movies)
+        MovieListController.movieListDao.createMovieList(movieList)
             .then((movieList) => res.json(movieList))
             .catch(next);
     }
@@ -57,31 +73,79 @@ class MovieListController {
         MovieListController.movieListDao.findAllMovieLists().then((lists) => res.json(lists));
     }
 
-    deleteAllMovieLists = (req: Request, res: Response) => {
-        // TODO: authentication + access control
-        MovieListController.movieListDao.deleteAllMovieLists()
-            .then((status) => res.json(status));
+    deleteAllMovieLists = async (req: Request, res: Response, next: NextFunction) => {
+        let profile;
+        try {
+            profile = AuthenticationController.checkLogin(req);
+        } catch (e) {
+            next(e);
+            return
+        }
+        const isAdmin = await AuthenticationController.isAdmin(profile.username);
+        if (isAdmin) {
+            MovieListController.movieListDao.deleteAllMovieLists()
+                .then((status) => res.json(status));
+        } else {
+            next(new NoPermissionError());
+        }
     }
 
-    deleteMovieListById = (req: Request, res: Response, next: NextFunction) => {
-        // TODO: authentication + access control
-        MovieListController.movieListDao.deleteMovieListById(req.params.lid)
-            .then((status) => res.json(status))
-            .catch(next);
+    deleteMovieListById = async (req: Request, res: Response, next: NextFunction) => {
+        let profile;
+        try {
+            profile = AuthenticationController.checkLogin(req);
+        } catch (e) {
+            next(e)
+            return;
+        }
+        const listId = req.params.lid;
+        const userId = profile._id;
+        const isAdmin = await AuthenticationController.isAdmin(profile.username);
+        if (isAdmin) {
+            MovieListController.movieListDao.deleteMovieListById(listId)
+                .then((status) => res.json(status))
+                .catch(next);
+        } else {
+            const userOwnsList = await MovieListController.movieListDao.findMovieListOwnedByUser(userId, listId);
+            if (userOwnsList) {
+                MovieListController.movieListDao.deleteMovieListById(listId)
+                    .then((status) => res.json(status))
+                    .catch(next);
+            } else {
+                next(new NoPermissionError());
+            }
+        }
     }
 
     updateMovieListById = async (req: Request, res: Response, next: NextFunction) => {
-        // TODO: authentication
-        const newMovies = req.body.movies;
-        const listId = req.params.lid;
-        if (!Array.isArray(newMovies)) {
-            next(new InvalidInputError());
+        let userId, profile;
+        try {
+            profile = AuthenticationController.checkLogin(req);
+            userId = await AuthenticationController.getUserId(req, profile);
+        } catch (e) {
+            next(e)
             return;
         }
-        if (newMovies) {
+        if (userId === MY) {
+            next(new InvalidInputError("Admin account does not have movie lists."))
+            return;
+        }
+        const listId = req.params.lid;
+        const data = req.body;
+        const newMovieList = {};
+        if (data.movies && Array.isArray(data.movies)) {
+            // @ts-ignore
+            newMovieList["movies"] = this.getUniqueMovies(data.movies);
+        }
+        if (data.listName) {
+            // @ts-ignore
+            newMovieList["listName"] = data.listName;
+        }
+        if (newMovieList) {
             const existingMovieList = await MovieListController.movieListDao.findMovieListById(listId);
             if (existingMovieList) {
-                MovieListController.movieListDao.updateMovieListById(req.params.lid, newMovies)
+                // @ts-ignore
+                MovieListController.movieListDao.updateMovieListById(listId, newMovieList)
                     .then((status) => res.json(status))
                     .catch(next);
             } else {
@@ -92,10 +156,19 @@ class MovieListController {
         }
     }
 
-    findMovieListsOwnedByUser = async (req: Request, res: Response, next: NextFunction) => {
-        // TODO: authentication
-        const userId = req.params.uid;
-        MovieListController.movieListDao.findMovieListsOwnedByUser(userId)
+    findAllMovieListsOwnedByUser = async (req: Request, res: Response, next: NextFunction) => {
+        let profile, userId;
+        userId = req.params.uid;
+        if (userId === MY) {
+            try {
+                profile = AuthenticationController.checkLogin(req);
+                userId = profile._id;
+            } catch (e) {
+                next(e);
+                return;
+            }
+        }
+        MovieListController.movieListDao.findAllMovieListsOwnedByUser(userId)
             .then((lists) => res.json(lists))
             .catch(next);
     }
@@ -105,6 +178,10 @@ class MovieListController {
         MovieListController.movieListDao.findMovieListByName(listName)
             .then((list) => res.json(list))
             .catch(next);
+    }
+
+    private getUniqueMovies = (movies: string[]) => {
+        return [...new Set(movies.map((m: any) => m + ""))];
     }
 
 }

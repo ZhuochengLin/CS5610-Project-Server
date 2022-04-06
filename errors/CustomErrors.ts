@@ -61,3 +61,11 @@ export class NoSuchMovieListError extends Error {
     }
 
 }
+
+export class NoPermissionError extends Error {
+
+    constructor(msg: string = "No permission on this operation.") {
+        super(msg);
+    }
+
+}
