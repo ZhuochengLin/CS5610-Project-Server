@@ -4,7 +4,7 @@ import got from "got";
 
 const TMDB_BASE_URL = "https://api.themoviedb.org/3/movie"
 
-class MovieController {
+export default class MovieController {
 
     private static movieController: MovieController | null = null;
 
@@ -77,5 +77,3 @@ class MovieController {
         });
     }
 }
-
-export default MovieController;
