@@ -18,7 +18,7 @@ export default class MovieController {
             app.get("/api/movies/nowplaying/:page", MovieController.movieController.findNowPlayingMovies);
             app.get("/api/movies/toprated/:page", MovieController.movieController.findTopRatedMovies);
             app.get("/api/movies/upcoming/:page", MovieController.movieController.findUpcomingMovies);
-            app.get("/api/movies", MovieController.movieController.searchMovie);
+            app.get("/api/search", MovieController.movieController.searchMovie);
         }
         return MovieController.movieController;
     }
