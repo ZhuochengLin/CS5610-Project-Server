@@ -13,10 +13,11 @@ export default class MovieController {
     public static getInstance = (app: Express) => {
         if (MovieController.movieController === null) {
             MovieController.movieController = new MovieController();
+            app.get("/api/movies/config", MovieController.movieController.getConfig);
             app.get("/api/movies/popular/:page", MovieController.movieController.findPopularMovies)
             app.get("/api/movies/:mid", MovieController.movieController.findMovieDetails);
-            app.get("/api/movies/nowplaying/:page", MovieController.movieController.findNowPlayingMovies);
-            app.get("/api/movies/toprated/:page", MovieController.movieController.findTopRatedMovies);
+            app.get("/api/movies/now-playing/:page", MovieController.movieController.findNowPlayingMovies);
+            app.get("/api/movies/top-rated/:page", MovieController.movieController.findTopRatedMovies);
             app.get("/api/movies/upcoming/:page", MovieController.movieController.findUpcomingMovies);
             app.get("/api/search", MovieController.movieController.searchMovie);
         }
@@ -26,11 +27,21 @@ export default class MovieController {
     private constructor() {
     }
 
+    getConfig = async (req: Request, res: Response, next: NextFunction) => {
+        const dataStream = got.stream.get(
+            `${TMDB_BASE_URL}/configuration`,
+            {searchParams: {api_key: process.env.TMDB_API_KEY}}
+        );
+        pipeline(dataStream, res, (err) => {
+            if (err) next(err)
+        });
+    }
+
     findPopularMovies = async (req: Request, res: Response, next: NextFunction) => {
         let page = req.params.page;
         const dataStream = got.stream.get(
             `${TMDB_MOVIE_BASE_URL}/popular`,
-            {searchParams: {api_key: process.env.TMDB_API_KEY, page: page}}
+            {searchParams: {api_key: process.env.TMDB_API_KEY, page: page}, responseType: "json"}
         );
         pipeline(dataStream, res, (err) => {
             if (err) next(err)

@@ -11,14 +11,16 @@ const cors = require("cors");
 const session = require("express-session");
 
 config();
-const app = express();
 mongoose.connect(`${process.env.DB_URI}`, (err) => {
     if (err) throw err;
     console.log("MongoDB connected!")
 });
 
+const app = express();
 app.use(
-    cors({credentials: true, origin: true})
+    cors({
+        credentials: true,
+        origin: ["http://localhost:3000", "https://cs5610-project-client.netlify.app/"]})
 );
 let sess = {
     secret: process.env.EXPRESS_SESSION_SECRET,
