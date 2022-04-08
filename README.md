@@ -11,10 +11,11 @@ Only admin account can manipulate other user's data.
 * DELETE ```/api/users``` Delete all users
 
 ### movies:
+* GET ```/api/movies/config``` Get configuration from TMDB API
 * GET ```/api/movies/:mid``` Find movie details by ID
 * GET ```/api/movies/popular/:page``` Find popular movies at page n
-* GET ```/api/movies/nowplaying/:page``` Find movies now playing in theater at page n
-* GET ```/api/movies/toprated/:page``` Find top rated movies at page n
+* GET ```/api/movies/now-playing/:page``` Find movies now playing in theater at page n
+* GET ```/api/movies/top-rated/:page``` Find top rated movies at page n
 * GET ```/api/movies/upcoming/:page``` Find upcoming movies at page n
 * GET ```/api/search``` Search movies
   * Search params:
