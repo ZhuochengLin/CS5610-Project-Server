@@ -92,16 +92,16 @@ export default class MovieController {
     }
 
     searchMovie = async (req: Request, res: Response, next: NextFunction) => {
-        const movie = req.query.movie;
+        const query = req.query.query;
         const page = req.query.page;
-        if (!movie || !page) {
-            next(new InvalidInputError("Please provide {movie} and {page} parameters."));
+        if (!query || !page) {
+            next(new InvalidInputError("Please provide {query} and {page} parameters."));
             return
         }
         const dataStream = got.stream.get(
             `${TMDB_BASE_URL}/search/movie`,
             // @ts-ignore
-            {searchParams: {api_key: process.env.TMDB_API_KEY, query: movie, page: page}}
+            {searchParams: {api_key: process.env.TMDB_API_KEY, query: query, page: page}}
         );
         pipeline(dataStream, res, (err) => {
             if (err) next(err)

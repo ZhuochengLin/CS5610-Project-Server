@@ -20,7 +20,7 @@ Private fields: ```["password", "phone"]```
 * GET ```/api/movies/upcoming/:page``` Find upcoming movies at page n
 * GET ```/api/search``` Search movies
   * Search params:
-    * ```movie```: string, the query string
+    * ```query```: string, the query string
     * ```page```: number, the page to retrieve
 
 ### movie lists:
