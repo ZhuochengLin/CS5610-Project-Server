@@ -20,7 +20,7 @@ const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: ["http://localhost:3000", "https://cs5610-project-client.netlify.app/"]})
+        origin: ["http://localhost:3000", "https://cs5610-project-client.netlify.app"]})
 );
 let sess = {
     secret: process.env.EXPRESS_SESSION_SECRET,
