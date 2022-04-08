@@ -3,6 +3,7 @@
 All endpoints that create/update/delete data will need a logged-in user to use. 
 Only admin account can manipulate other user's data.
 ### users
+Private fields: ```["password", "phone"]```
 * GET ```/api/users``` Find all users
 * GET ```/api/users/:uid``` Find user by id
 * POST ```/api/users``` Create user
