@@ -8,4 +8,5 @@ export default interface User {
     profilePhoto?: string,
     biography?: string;
     dateOfBirth?: Date;
+    phone?: string;
 };
