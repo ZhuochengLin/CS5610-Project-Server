@@ -3,7 +3,7 @@ import User from "../models/User";
 import {Express, NextFunction, Request, Response} from "express";
 import AuthenticationController from "./AuthenticationController";
 import {InvalidInputError, NoPermissionError} from "../errors/CustomErrors";
-import {MY} from "../utils/constants";
+import {MY, PRIVATE_FIELDS, STARS} from "../utils/constants";
 
 export default class UserController {
     private static userDao: UserDao = UserDao.getInstance();
@@ -32,12 +32,37 @@ export default class UserController {
 
     findAllUsers = (req: Request, res: Response) =>
         UserController.userDao.findAllUsers()
-            .then((users: User[]) => res.json(users));
+            .then((users: User[]) => {
+                // remove private fields
+                users = users.map(u => {
+                    for (let privateField of PRIVATE_FIELDS) {
+                        // @ts-ignore
+                        if (u[privateField]) {
+                            // @ts-ignore
+                            u[privateField] = STARS;
+                        }
+                    }
+                    return u;
+                });
+                res.json(users);
+            });
 
-    findUserById = (req: Request, res: Response, next: NextFunction) =>
+    findUserById = (req: Request, res: Response, next: NextFunction) => {
         UserController.userDao.findUserById(req.params.uid)
-            .then((user) => res.json(user))
+            .then((user) => {
+                if (user) {
+                    for (let privateField of PRIVATE_FIELDS) {
+                        // @ts-ignore
+                        if (user[privateField]) {
+                            // @ts-ignore
+                            user[privateField] = STARS;
+                        }
+                    }
+                }
+                res.json(user);
+            })
             .catch(next);
+    }
 
     createUser = async (req: Request, res: Response, next: NextFunction) => {
         let profile;

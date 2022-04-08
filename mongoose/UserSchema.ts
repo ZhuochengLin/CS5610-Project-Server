@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema<User>({
     lastName: String,
     profilePhoto: String,
     biography: String,
-    dateOfBirth: Date
+    dateOfBirth: Date,
+    phone: String
 }, {collection: "users"});
 export default UserSchema;
