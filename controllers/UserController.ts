@@ -2,7 +2,7 @@ import UserDao from "../daos/UserDao";
 import User from "../models/User";
 import {Express, NextFunction, Request, Response} from "express";
 import AuthenticationController from "./AuthenticationController";
-import {InvalidInputError, NoPermissionError} from "../errors/CustomErrors";
+import {InvalidInputError, NoPermissionError, NoSuchUserError, UserAlreadyExistsError} from "../errors/CustomErrors";
 import {MY, PRIVATE_FIELDS} from "../utils/constants";
 
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -107,7 +107,15 @@ export default class UserController {
             next(new InvalidInputError("Received invalid id"));
             return;
         }
-        UserController.userDao.updateUser(userId, req.body)
+        const data = req.body;
+        if (data.username) {
+            const existingUser = await UserController.userDao.findUserByUsername(data.username);
+            if (existingUser) {
+                next(new UserAlreadyExistsError());
+                return;
+            }
+        }
+        UserController.userDao.updateUser(userId, data)
             .then((status) => res.send(status)).catch(next);
     }
 
