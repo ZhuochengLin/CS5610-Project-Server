@@ -50,7 +50,7 @@ class MovieListController {
             return
         }
         const listName = data.listName;
-        const existingList = await MovieListController.movieListDao.findMovieListByName(listName);
+        const existingList = await MovieListController.movieListDao.findAllMovieListsOwnedByUserByName(userId, listName);
         if (existingList) {
             next(new MovieListAlreadyExistsError);
             return;
@@ -118,6 +118,7 @@ class MovieListController {
     }
 
     updateMovieListById = async (req: Request, res: Response, next: NextFunction) => {
+        // authentication and get user id
         let userId, profile;
         try {
             profile = AuthenticationController.checkLogin(req);
@@ -133,6 +134,7 @@ class MovieListController {
         const listId = req.params.lid;
         const data = req.body;
         const newMovieList = {};
+        // check inputs
         if (data.movies && Array.isArray(data.movies)) {
             // @ts-ignore
             newMovieList["movies"] = this.getUniqueMovies(data.movies);

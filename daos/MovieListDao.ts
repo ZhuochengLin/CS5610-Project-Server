@@ -51,6 +51,10 @@ class MovieListDao {
         return MovieListModel.findOne({ownedBy: uid, _id: lid});
     }
 
+    findAllMovieListsOwnedByUserByName = async (uid: string, lname: string): Promise<MovieList | null> => {
+        return MovieListModel.findOne({ownedBy: uid, listName: lname});
+    }
+
 }
 
 export default MovieListDao;
