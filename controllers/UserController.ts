@@ -5,6 +5,8 @@ import AuthenticationController from "./AuthenticationController";
 import {InvalidInputError, NoPermissionError} from "../errors/CustomErrors";
 import {MY, PRIVATE_FIELDS} from "../utils/constants";
 
+const ObjectId = require('mongoose').Types.ObjectId;
+
 export default class UserController {
     private static userDao: UserDao = UserDao.getInstance();
     private static userController: UserController | null = null;
@@ -48,7 +50,12 @@ export default class UserController {
             });
 
     findUserById = (req: Request, res: Response, next: NextFunction) => {
-        UserController.userDao.findUserById(req.params.uid)
+        const userId = req.params.uid;
+        if (!ObjectId.isValid(userId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
+        }
+        UserController.userDao.findUserById(userId)
             .then((user) => {
                 if (user) {
                     for (let privateField of PRIVATE_FIELDS) {
@@ -96,6 +103,10 @@ export default class UserController {
             next(new InvalidInputError("Cannot update admin account."))
             return;
         }
+        if (!ObjectId.isValid(userId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
+        }
         UserController.userDao.updateUser(userId, req.body)
             .then((status) => res.send(status)).catch(next);
     }
@@ -115,6 +126,10 @@ export default class UserController {
             return;
         }
         if (isAdmin) {
+            if (!ObjectId.isValid(userId)) {
+                next(new InvalidInputError("Received invalid id"));
+                return;
+            }
             UserController.userDao.deleteUser(userId)
                 .then((status) => res.send(status))
                 .catch(next);

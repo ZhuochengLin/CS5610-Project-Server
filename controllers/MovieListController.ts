@@ -9,6 +9,8 @@ import {
 import AuthenticationController from "./AuthenticationController";
 import {MY} from "../utils/constants";
 
+const ObjectId = require('mongoose').Types.ObjectId;
+
 class MovieListController {
 
     private static movieListController: MovieListController | null = null;
@@ -43,6 +45,10 @@ class MovieListController {
             next(new InvalidInputError("Admin account cannot create movie lists"))
             return;
         }
+        if (!ObjectId.isValid(userId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
+        }
         // get list info
         const data = req.body;
         if (!data.listName) {
@@ -64,6 +70,11 @@ class MovieListController {
     }
 
     findMovieListById = (req: Request, res: Response, next: NextFunction) => {
+        const movieListId = req.params.lid;
+        if (!ObjectId.isValid(movieListId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
+        }
         MovieListController.movieListDao.findMovieListById(req.params.lid)
             .then((list) => res.json(list))
             .catch(next);
@@ -100,6 +111,10 @@ class MovieListController {
         }
         const listId = req.params.lid;
         const userId = profile._id;
+        if (!ObjectId.isValid(userId) || !ObjectId.isValid(listId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
+        }
         const isAdmin = await AuthenticationController.isAdmin(profile.username);
         if (isAdmin) {
             MovieListController.movieListDao.deleteMovieListById(listId)
@@ -132,6 +147,10 @@ class MovieListController {
             return;
         }
         const listId = req.params.lid;
+        if (!ObjectId.isValid(userId) || !ObjectId.isValid(listId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
+        }
         const data = req.body;
         const newMovieList = {};
         // check inputs
@@ -169,6 +188,10 @@ class MovieListController {
                 next(e);
                 return;
             }
+        }
+        if (!ObjectId.isValid(userId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
         }
         MovieListController.movieListDao.findAllMovieListsOwnedByUser(userId)
             .then((lists) => res.json(lists))
