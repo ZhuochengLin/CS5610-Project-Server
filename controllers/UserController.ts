@@ -3,7 +3,7 @@ import User from "../models/User";
 import {Express, NextFunction, Request, Response} from "express";
 import AuthenticationController from "./AuthenticationController";
 import {InvalidInputError, NoPermissionError} from "../errors/CustomErrors";
-import {MY, PRIVATE_FIELDS, STARS} from "../utils/constants";
+import {MY, PRIVATE_FIELDS} from "../utils/constants";
 
 export default class UserController {
     private static userDao: UserDao = UserDao.getInstance();
@@ -39,7 +39,7 @@ export default class UserController {
                         // @ts-ignore
                         if (u[privateField]) {
                             // @ts-ignore
-                            u[privateField] = STARS;
+                            u[privateField] = "";
                         }
                     }
                     return u;
@@ -55,7 +55,7 @@ export default class UserController {
                         // @ts-ignore
                         if (user[privateField]) {
                             // @ts-ignore
-                            user[privateField] = STARS;
+                            user[privateField] = "";
                         }
                     }
                 }

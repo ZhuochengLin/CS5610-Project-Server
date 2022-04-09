@@ -48,7 +48,7 @@ export default class AuthenticationController {
         }
         const match = await bcrypt.compare(password, existingUser.password);
         if (match) {
-            existingUser.password = '******';
+            existingUser.password = "";
             // @ts-ignore
             req.session['profile'] = existingUser;
             // @ts-ignore
@@ -76,7 +76,7 @@ export default class AuthenticationController {
         }
         const insertedUser = await AuthenticationController.userDao
             .createUser(newUser);
-        insertedUser.password = '******';
+        insertedUser.password = "";
         // @ts-ignore
         req.session['profile'] = insertedUser;
         // @ts-ignore
