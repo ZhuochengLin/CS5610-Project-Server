@@ -4,7 +4,7 @@ import {
     UserAlreadyExistsError,
     InvalidInputError,
     NoUserLoggedInError,
-    IncorrectCredentialError
+    IncorrectCredentialError, NoSuchUserError
 } from "../errors/CustomErrors";
 import AdminDao from "../daos/AdminDao";
 import User from "../models/User";
@@ -84,10 +84,23 @@ export default class AuthenticationController {
         res.json(insertedUser);
     }
 
-    profile = (req: Request, res: Response, next: NextFunction) => {
+    profile = async (req: Request, res: Response, next: NextFunction) => {
         // @ts-ignore
-        const profile = req.session['profile'];
+        let profile = req.session['profile'];
         if (profile) {
+            // if logged in
+            const userId = profile._id;
+            const updatedUser = await AuthenticationController.userDao.findUserById(userId);
+            if (updatedUser) {
+                updatedUser.password = "";
+                // @ts-ignore
+                req.session['profile'] = updatedUser;
+                // @ts-ignore
+                profile = req.session['profile'];
+            } else {
+                next(new NoSuchUserError());
+                return;
+            }
             res.json(profile);
         } else {
             next(new NoUserLoggedInError());
