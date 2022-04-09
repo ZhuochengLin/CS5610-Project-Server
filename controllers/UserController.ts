@@ -108,9 +108,10 @@ export default class UserController {
             return;
         }
         const data = req.body;
+        // duplicate username
         if (data.username) {
             const existingUser = await UserController.userDao.findUserByUsername(data.username);
-            if (existingUser) {
+            if (existingUser && existingUser._id.toString() !== userId) {
                 next(new UserAlreadyExistsError());
                 return;
             }
