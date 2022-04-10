@@ -20,7 +20,8 @@ const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: true)
+        origin: true
+    })
 );
 let sess = {
     secret: process.env.EXPRESS_SESSION_SECRET,
