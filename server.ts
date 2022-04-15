@@ -7,6 +7,7 @@ import UserController from "./controllers/UserController";
 import MovieController from "./controllers/MovieController";
 import AuthenticationController from "./controllers/AuthenticationController";
 import MovieListController from "./controllers/MovieListController";
+import MovieReviewController from "./controllers/MovieReviewController";
 const cors = require("cors");
 const session = require("express-session");
 
@@ -44,6 +45,7 @@ const userController = UserController.getInstance(app);
 const movieController = MovieController.getInstance(app);
 const authController = AuthenticationController.getInstance(app);
 const movieListController = MovieListController.getInstance(app);
+const movieReviewController = MovieReviewController.getInstance(app);
 
 app.use(LogError);
 app.use(ErrorHandler);

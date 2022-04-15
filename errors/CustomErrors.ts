@@ -54,6 +54,14 @@ export class MovieListAlreadyExistsError extends Error {
 
 }
 
+export class MovieReviewAlreadyExistsError extends Error {
+
+    constructor() {
+        super("Movie review already exists.");
+    }
+
+}
+
 export class NoSuchMovieListError extends Error {
 
     constructor() {
