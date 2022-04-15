@@ -23,6 +23,8 @@ export default class MovieReviewController {
             app.delete("/api/users/:uid/movie-reviews/:rid", MovieReviewController.movieReviewController.deleteReviewById);
             app.get("/api/users/:uid/movie-reviews", MovieReviewController.movieReviewController.findAllReviewsOwnedByUser);
             app.put("/api/users/:uid/movie-reviews/:rid", MovieReviewController.movieReviewController.updateMovieReview);
+            app.get("/api/movies/:mid/movie-reviews", MovieReviewController.movieReviewController.findAllReviewsOfMovie);
+            app.get("/api/users/:uid/movie-reviews/:rid", MovieReviewController.movieReviewController.findReviewOnMovieOwnedByUsr);
         }
         return MovieReviewController.movieReviewController;
     }
@@ -163,4 +165,31 @@ export default class MovieReviewController {
         }
     }
 
+    findAllReviewsOfMovie = (req: Request, res: Response, next: NextFunction) => {
+        MovieReviewController.movieReviewDao.findAllReviewsOfMovie(req.params.mid)
+            .then(reviews => res.json(reviews))
+            .catch(next);
+    }
+
+    findReviewOnMovieOwnedByUsr = (req: Request, res: Response, next: NextFunction) => {
+        let profile, userId;
+        userId = req.params.uid;
+        if (userId === MY) {
+            try {
+                profile = AuthenticationController.checkLogin(req);
+                userId = profile._id;
+            } catch (e) {
+                next(e);
+                return;
+            }
+        }
+        const reviewId = req.params.rid;
+        if (!ObjectId.isValid(userId) || !ObjectId.isValid(reviewId)) {
+            next(new InvalidInputError("Received invalid id"));
+            return;
+        }
+        MovieReviewController.movieReviewDao.findReviewOwnedByUsr(userId, reviewId)
+            .then(review => res.json(review))
+            .catch(next)
+    }
 }

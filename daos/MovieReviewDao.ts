@@ -46,4 +46,8 @@ export default class MovieReviewDao {
     updateMovieReview = async (rid: string, newReview: MovieReview): Promise<any> => {
         return MovieReviewModel.updateOne({_id: rid}, {$set: newReview});
     }
+
+    findAllReviewsOfMovie = async (mid: string): Promise<MovieReview[]> => {
+        return MovieReviewModel.find({movieId: mid}).populate("postedBy", ["username"]);
+    }
 }
