@@ -5,4 +5,5 @@ export default interface MovieReview {
     postedBy: User;
     review: string;
     rating: number;
+    createdOn: Date;
 }

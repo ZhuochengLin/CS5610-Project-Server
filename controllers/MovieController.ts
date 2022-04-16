@@ -20,6 +20,7 @@ export default class MovieController {
             app.get("/api/movies/top-rated/:page", MovieController.movieController.findTopRatedMovies);
             app.get("/api/movies/upcoming/:page", MovieController.movieController.findUpcomingMovies);
             app.get("/api/search", MovieController.movieController.searchMovie);
+            app.get("/api/movies/:mid/recommendations/:page", MovieController.movieController.getRecommendationsByMovie);
         }
         return MovieController.movieController;
     }
@@ -102,6 +103,18 @@ export default class MovieController {
             `${TMDB_BASE_URL}/search/movie`,
             // @ts-ignore
             {searchParams: {api_key: process.env.TMDB_API_KEY, query: query, page: page}}
+        );
+        pipeline(dataStream, res, (err) => {
+            if (err) next(err)
+        });
+    }
+
+    getRecommendationsByMovie = (req: Request, res: Response, next: NextFunction) => {
+        const movieId = req.params.mid;
+        const page = req.params.page;
+        const dataStream = got.stream.get(
+            `${TMDB_MOVIE_BASE_URL}/${movieId}/recommendations`,
+            {searchParams: {api_key: process.env.TMDB_API_KEY, page: page}}
         );
         pipeline(dataStream, res, (err) => {
             if (err) next(err)

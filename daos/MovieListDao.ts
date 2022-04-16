@@ -20,15 +20,15 @@ class MovieListDao {
     }
 
     findMovieListByName = async (listName: string): Promise<MovieList | null> => {
-        return MovieListModel.findOne({listName: listName});
+        return MovieListModel.findOne({listName: listName}).populate("ownedBy", ["username"]);
     }
 
     findAllMovieLists = async (): Promise<MovieList[]> => {
-        return MovieListModel.find({});
+        return MovieListModel.find({}).sort({"createdOn": -1}).populate("ownedBy", ["username"]);
     }
 
     findMovieListById = async (lid: string): Promise<MovieList | null> => {
-        return MovieListModel.findOne({_id: lid});
+        return MovieListModel.findOne({_id: lid}).populate("ownedBy", ["username"]);
     }
 
     deleteMovieListById = async (lid: string): Promise<any> => {
@@ -44,15 +44,15 @@ class MovieListDao {
     }
 
     findAllMovieListsOwnedByUser = async (uid: string): Promise<MovieList[]> => {
-        return MovieListModel.find({ownedBy: uid});
+        return MovieListModel.find({ownedBy: uid}).sort({"createdOn": -1}).populate("ownedBy", ["username"]);
     }
 
     findMovieListOwnedByUser = async (uid: string, lid: string): Promise<MovieList | null> => {
-        return MovieListModel.findOne({ownedBy: uid, _id: lid});
+        return MovieListModel.findOne({ownedBy: uid, _id: lid}).populate("ownedBy", ["username"]);
     }
 
-    findAllMovieListsOwnedByUserByName = async (uid: string, lname: string): Promise<MovieList | null> => {
-        return MovieListModel.findOne({ownedBy: uid, listName: lname});
+    findMovieListOwnedByUserByName = async (uid: string, lname: string): Promise<MovieList | null> => {
+        return MovieListModel.findOne({ownedBy: uid, listName: lname}).populate("ownedBy", ["username"]);
     }
 
 }

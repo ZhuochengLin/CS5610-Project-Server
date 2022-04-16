@@ -56,7 +56,7 @@ class MovieListController {
             return
         }
         const listName = data.listName;
-        const existingList = await MovieListController.movieListDao.findAllMovieListsOwnedByUserByName(userId, listName);
+        const existingList = await MovieListController.movieListDao.findMovieListOwnedByUserByName(userId, listName);
         if (existingList) {
             next(new MovieListAlreadyExistsError);
             return;
