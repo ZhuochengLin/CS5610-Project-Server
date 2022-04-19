@@ -9,4 +9,5 @@ export default interface User {
     biography?: string;
     dateOfBirth?: Date;
     phone?: string;
+    role?: string;
 };

@@ -8,6 +8,7 @@ import {
 } from "../errors/CustomErrors";
 import AdminDao from "../daos/AdminDao";
 import User from "../models/User";
+import {ADMIN, USER} from "../utils/constants";
 
 const bcrypt = require('bcrypt');
 
@@ -40,6 +41,7 @@ export default class AuthenticationController {
         }
         const username = user.username;
         const password = user.password;
+        const role = user.role;
         const existingUser = await AuthenticationController.userDao
             .findUserByUsername(username);
         if (!existingUser) {
@@ -48,7 +50,12 @@ export default class AuthenticationController {
         }
         const match = await bcrypt.compare(password, existingUser.password);
         if (match) {
+            if (role === ADMIN && !await AuthenticationController.isAdmin(username)) {
+                next(new IncorrectCredentialError());
+                return;
+            }
             existingUser.password = "";
+            existingUser.role = role === ADMIN ? ADMIN : USER;
             // @ts-ignore
             req.session['profile'] = existingUser;
             // @ts-ignore
@@ -77,6 +84,7 @@ export default class AuthenticationController {
         const insertedUser = await AuthenticationController.userDao
             .createUser(newUser);
         insertedUser.password = "";
+        insertedUser.role = USER;
         // @ts-ignore
         req.session['profile'] = insertedUser;
         // @ts-ignore
@@ -93,6 +101,7 @@ export default class AuthenticationController {
             const updatedUser = await AuthenticationController.userDao.findUserById(userId);
             if (updatedUser) {
                 updatedUser.password = "";
+                updatedUser.role = await AuthenticationController.isAdmin(updatedUser.username) ? ADMIN : USER;
                 // @ts-ignore
                 req.session['profile'] = updatedUser;
                 // @ts-ignore
