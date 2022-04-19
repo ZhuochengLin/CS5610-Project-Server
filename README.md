@@ -18,6 +18,7 @@ Private fields: ```["password", "phone"]```
 * GET ```/api/movies/now-playing/:page``` Find movies now playing in theater at page n
 * GET ```/api/movies/top-rated/:page``` Find top rated movies at page n
 * GET ```/api/movies/upcoming/:page``` Find upcoming movies at page n
+* GET ```/api/movies/:mid/recommendations/:page``` Get recommendation from movie at page n
 * GET ```/api/search``` Search movies
   * Search params:
     * ```query```: string, the query string
