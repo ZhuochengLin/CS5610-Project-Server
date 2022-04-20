@@ -1,5 +1,5 @@
 export const MY = "my";
-export const PRIVATE_FIELDS = ["password", "phone"];
+export const PRIVATE_FIELDS = ["password", "phone", "dateOfBirth"];
 export const ADMIN = "admin";
 export const USER = "user";
 export const HEADER_IMAGE_FIELD = "headerImage";
