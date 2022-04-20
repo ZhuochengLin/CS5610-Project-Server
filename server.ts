@@ -8,6 +8,7 @@ import MovieController from "./controllers/MovieController";
 import AuthenticationController from "./controllers/AuthenticationController";
 import MovieListController from "./controllers/MovieListController";
 import MovieReviewController from "./controllers/MovieReviewController";
+import CloudinaryController from "./controllers/CloudinaryController";
 const cors = require("cors");
 const session = require("express-session");
 
@@ -16,6 +17,14 @@ mongoose.connect(`${process.env.DB_URI}`, (err) => {
     if (err) throw err;
     console.log("MongoDB connected!")
 });
+const cloudinary = require("cloudinary");
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true
+});
+console.log("Cloudinary configured!");
 
 const app = express();
 app.use(
@@ -46,6 +55,7 @@ const movieController = MovieController.getInstance(app);
 const authController = AuthenticationController.getInstance(app);
 const movieListController = MovieListController.getInstance(app);
 const movieReviewController = MovieReviewController.getInstance(app);
+const cloudinaryController = CloudinaryController.getInstance(app);
 
 app.use(LogError);
 app.use(ErrorHandler);
