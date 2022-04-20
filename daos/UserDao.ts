@@ -22,7 +22,7 @@ class UserDao {
     }
 
     findAllUsers = async (): Promise<User[]> => {
-        return UserModel.find({});
+        return UserModel.find({}).sort({"joined": -1});
     }
 
     findUserById = async (uid: string): Promise<User | null> => {
