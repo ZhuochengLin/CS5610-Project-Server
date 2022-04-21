@@ -9,6 +9,7 @@ import AuthenticationController from "./controllers/AuthenticationController";
 import MovieListController from "./controllers/MovieListController";
 import MovieReviewController from "./controllers/MovieReviewController";
 import CloudinaryController from "./controllers/CloudinaryController";
+import ReviewLikeController from "./controllers/ReviewLikeController";
 const cors = require("cors");
 const session = require("express-session");
 
@@ -56,6 +57,7 @@ const authController = AuthenticationController.getInstance(app);
 const movieListController = MovieListController.getInstance(app);
 const movieReviewController = MovieReviewController.getInstance(app);
 const cloudinaryController = CloudinaryController.getInstance(app);
+const reviewLikeController = ReviewLikeController.getInstance(app);
 
 app.use(LogError);
 app.use(ErrorHandler);

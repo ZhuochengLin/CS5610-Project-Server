@@ -1,9 +1,12 @@
 import User from "./User";
 
 export default interface MovieReview {
-    movieId: string;
     postedBy: User;
+    movieId: string;
     review: string;
     rating: number;
-    createdOn: Date;
+    postedOn: Date;
+    stats: {
+        likes: number;
+    }
 }
