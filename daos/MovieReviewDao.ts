@@ -20,7 +20,7 @@ export default class MovieReviewDao {
     }
 
     findAllReviews = async (): Promise<MovieReview[]> => {
-        return MovieReviewModel.find().populate("postedBy", ["username"]);
+        return MovieReviewModel.find().populate("postedBy", ["username", "profilePhoto"]);
     }
 
     deleteAllReviews = async (): Promise<any> => {
@@ -32,15 +32,15 @@ export default class MovieReviewDao {
     }
 
     findReviewOwnedByUsr = async (uid: string, rid: string): Promise<MovieReview | null> => {
-        return MovieReviewModel.findOne({_id: rid, postedBy: uid}).populate("postedBy", ["username"]);
+        return MovieReviewModel.findOne({_id: rid, postedBy: uid}).populate("postedBy", ["username", "profilePhoto"]);
     }
 
     findAllReviewsOwnedByUser = async (uid: string): Promise<MovieReview[]> => {
-        return MovieReviewModel.find({postedBy: uid}).populate("postedBy", ["username"]);
+        return MovieReviewModel.find({postedBy: uid}).populate("postedBy", ["username", "profilePhoto"]);
     }
 
     findReviewOnMovieOwnedByUsr = async (uid: string, mid: string): Promise<MovieReview | null> => {
-        return MovieReviewModel.findOne({postedBy: uid, movieId: mid});
+        return MovieReviewModel.findOne({postedBy: uid, movieId: mid}).populate("postedBy", ["username", "profilePhoto"]);
     }
 
     updateMovieReview = async (rid: string, newReview: MovieReview): Promise<any> => {
@@ -48,6 +48,6 @@ export default class MovieReviewDao {
     }
 
     findAllReviewsOfMovie = async (mid: string): Promise<MovieReview[]> => {
-        return MovieReviewModel.find({movieId: mid}).populate("postedBy", ["username"]);
+        return MovieReviewModel.find({movieId: mid}).populate("postedBy", ["username", "profilePhoto"]);
     }
 }
