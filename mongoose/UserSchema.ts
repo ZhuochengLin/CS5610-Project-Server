@@ -14,6 +14,10 @@ const UserSchema = new mongoose.Schema<User>({
     dateOfBirth: Date,
     phone: String,
     role: {type: String, enum: [ADMIN, USER], default: USER},
-    joined: {type: Date, default: Date.now}
+    joined: {type: Date, default: Date.now},
+    stats: {
+        following: {type: Number, default: 0},
+        follower: {type: Number, default: 0}
+    }
 }, {collection: "users"});
 export default UserSchema;

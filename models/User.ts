@@ -6,10 +6,14 @@ export default interface User {
     email?: string;
     firstName?: string;
     lastName?: string;
-    profilePhoto?: string;
-    headerImage?: string;
+    profilePhoto: string;
+    headerImage: string;
     biography?: string;
     dateOfBirth?: Date;
     phone?: string;
-    role?: string;
+    role: string;
+    stats: {
+        following: number;
+        follower: number;
+    }
 };

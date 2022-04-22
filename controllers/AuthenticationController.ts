@@ -101,7 +101,7 @@ export default class AuthenticationController {
             const updatedUser = await AuthenticationController.userDao.findUserById(userId);
             if (updatedUser) {
                 updatedUser.password = "";
-                updatedUser.role = await AuthenticationController.isAdmin(updatedUser.username) ? ADMIN : USER;
+                updatedUser.role = profile.role;
                 // @ts-ignore
                 req.session['profile'] = updatedUser;
                 // @ts-ignore

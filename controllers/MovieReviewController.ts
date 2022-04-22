@@ -47,8 +47,8 @@ export default class MovieReviewController {
             return;
         }
         const data = req.body;
-        if (!data.movieId || !data.review) {
-            next(new InvalidInputError("Missing movie ID or review"));
+        if (!data.movieId || !data.review || !data.rating) {
+            next(new InvalidInputError("Missing values"));
             return;
         }
         const existingReview = await MovieReviewController.movieReviewDao.findReviewOnMovieOwnedByUsr(userId, data.movieId);
