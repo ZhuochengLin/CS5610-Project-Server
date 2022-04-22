@@ -27,7 +27,7 @@ export default class MovieLikeDao {
     }
 
     findAllMoviesLikedByUser = async (uid: string) => {
-        return MovieLikeModel.find({likedBy: uid});
+        return MovieLikeModel.find({likedBy: uid}).sort({"postedOn": -1});
     }
 
     findUserLikesMovie = async (uid: string, mid: string) => {
