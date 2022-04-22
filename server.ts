@@ -11,6 +11,8 @@ import MovieReviewController from "./controllers/MovieReviewController";
 import CloudinaryController from "./controllers/CloudinaryController";
 import ReviewLikeController from "./controllers/ReviewLikeController";
 import FollowController from "./controllers/FollowController";
+import AdminController from "./controllers/AdminController";
+import SuperController from "./controllers/SuperController";
 const cors = require("cors");
 const session = require("express-session");
 
@@ -60,6 +62,8 @@ const movieReviewController = MovieReviewController.getInstance(app);
 const cloudinaryController = CloudinaryController.getInstance(app);
 const reviewLikeController = ReviewLikeController.getInstance(app);
 const followController = FollowController.getInstance(app);
+const adminController = AdminController.getInstance(app);
+const superController = SuperController.getInstance(app);
 
 app.use(LogError);
 app.use(ErrorHandler);

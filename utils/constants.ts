@@ -2,6 +2,7 @@ export const MY = "my";
 export const PRIVATE_FIELDS = ["password", "phone", "dateOfBirth"];
 export const ADMIN = "admin";
 export const USER = "user";
+export const SUPER = "super";
 export const HEADER_IMAGE_FIELD = "headerImage";
 export const PROFILE_PHOTO_FIELD = "profilePhoto";
 export const IMAGE_FIELD = "image";

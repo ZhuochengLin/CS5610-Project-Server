@@ -16,4 +16,16 @@ export default class AdminDao {
         return AdminModel.findOne({username: uname});
     }
 
+    createAdmin = async (uname: string) => {
+        return AdminModel.create({username: uname});
+    }
+
+    deleteAdmin = async (uname: string) => {
+        return AdminModel.deleteOne({username: uname});
+    }
+
+    findAllAdmins = async () => {
+        return AdminModel.find();
+    }
+
 }
