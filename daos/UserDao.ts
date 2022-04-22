@@ -42,7 +42,7 @@ class UserDao {
         return UserModel.deleteMany({});
     }
 
-    updateUser = async (uid: string, user: User): Promise<any> => {
+    updateUser = async (uid: string, user: any): Promise<any> => {
         return UserModel.updateOne({_id: uid}, {$set: user});
     }
 
