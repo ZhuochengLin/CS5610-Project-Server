@@ -49,7 +49,7 @@ export class EmptyMovieListNameError extends Error {
 export class MovieListAlreadyExistsError extends Error {
 
     constructor() {
-        super("Movie list already exists.");
+        super("MovieStats list already exists.");
     }
 
 }
@@ -57,7 +57,7 @@ export class MovieListAlreadyExistsError extends Error {
 export class MovieReviewAlreadyExistsError extends Error {
 
     constructor() {
-        super("Movie review already exists.");
+        super("MovieStats review already exists.");
     }
 
 }
