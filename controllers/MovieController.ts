@@ -21,6 +21,7 @@ export default class MovieController {
             app.get("/api/movies/upcoming/:page", MovieController.movieController.findUpcomingMovies);
             app.get("/api/search", MovieController.movieController.searchMovie);
             app.get("/api/movies/:mid/recommendations/:page", MovieController.movieController.getRecommendationsByMovie);
+            app.get("/api/movies/:mid/credits", MovieController.movieController.findMovieCredits);
         }
         return MovieController.movieController;
     }
@@ -52,6 +53,16 @@ export default class MovieController {
     findMovieDetails = async (req: Request, res: Response, next: NextFunction) => {
         const dataStream = got.stream.get(
             `${TMDB_MOVIE_BASE_URL}/${req.params.mid}`,
+            {searchParams: {api_key: process.env.TMDB_API_KEY}}
+        );
+        pipeline(dataStream, res, (err) => {
+            if (err) next(err)
+        });
+    }
+
+    findMovieCredits = async (req: Request, res: Response, next: NextFunction) => {
+        const dataStream = got.stream.get(
+            `${TMDB_MOVIE_BASE_URL}/${req.params.mid}/credits`,
             {searchParams: {api_key: process.env.TMDB_API_KEY}}
         );
         pipeline(dataStream, res, (err) => {
