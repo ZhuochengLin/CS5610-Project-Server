@@ -73,3 +73,9 @@ app.use(LogError);
 app.use(ErrorHandler);
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);
+import UserDao from "./daos/UserDao";
+
+const userDao = UserDao.getInstance();
+userDao.findAllUsers().then((us) => {
+
+})

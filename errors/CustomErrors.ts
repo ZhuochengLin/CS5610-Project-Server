@@ -9,7 +9,7 @@ export class NoSuchUserError extends Error {
 export class NoUserLoggedInError extends Error {
 
     constructor() {
-        super("No user is logged in.");
+        super("Login expired.");
     }
 
 }

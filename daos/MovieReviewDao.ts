@@ -50,4 +50,8 @@ export default class MovieReviewDao {
     findAllReviewsOfMovie = async (mid: string): Promise<MovieReview[]> => {
         return MovieReviewModel.find({movieId: mid}).sort({"postedOn": -1}).populate("postedBy", ["username", "profilePhoto"]);
     }
+
+    findReviewById = async (rid: string): Promise<MovieReview | null> => {
+        return MovieReviewModel.findOne({_id: rid}).populate("postedBy", ["username", "profilePhoto"]);
+    }
 }

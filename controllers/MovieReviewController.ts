@@ -18,6 +18,7 @@ export default class MovieReviewController {
         if (MovieReviewController.movieReviewController === null) {
             MovieReviewController.movieReviewController = new MovieReviewController();
             app.get("/api/movie-reviews", MovieReviewController.movieReviewController.findAllReviews);
+            app.get("/api/movie-reviews/:rid", MovieReviewController.movieReviewController.findReviewById);
             app.post("/api/users/:uid/movie-reviews", MovieReviewController.movieReviewController.createReview);
             app.delete("/api/movie-reviews", MovieReviewController.movieReviewController.deleteAllReviews);
             app.delete("/api/users/:uid/movie-reviews/:rid", MovieReviewController.movieReviewController.deleteReviewById);
@@ -67,7 +68,13 @@ export default class MovieReviewController {
             .catch(next);
     }
 
-    findAllReviewsOwnedByUser = (req: Request, res: Response, next: NextFunction) => {
+    findReviewById = (req: Request, res: Response, next: NextFunction) => {
+        MovieReviewController.movieReviewDao.findReviewById(req.params.rid)
+            .then(r => res.json(r))
+            .catch(next)
+    }
+
+        findAllReviewsOwnedByUser = (req: Request, res: Response, next: NextFunction) => {
         let profile, userId;
         userId = req.params.uid;
         if (userId === MY) {

@@ -43,7 +43,14 @@ class UserDao {
     }
 
     updateUser = async (uid: string, user: any): Promise<any> => {
+        if (user.password) {
+            user.password = await this.encodePassword(user.password);
+        }
         return UserModel.updateOne({_id: uid}, {$set: user});
+    }
+
+    private encodePassword = async (password: string) => {
+        return bcrypt.hash(password, saltRounds);
     }
 
 }
