@@ -1,5 +1,5 @@
 export const MY = "my";
-export const PRIVATE_FIELDS = ["password", "phone", "dateOfBirth"];
+export const PRIVATE_FIELDS = ["password", "phone", "dateOfBirth", "email"];
 export const ADMIN = "admin";
 export const USER = "user";
 export const SUPER = "super";

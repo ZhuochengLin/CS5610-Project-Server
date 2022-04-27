@@ -1,3 +1,4 @@
 export default interface Admin {
-    username: string
+    username: string;
+    accessLevel: string;
 }
