@@ -11,6 +11,10 @@ import MovieReviewController from "./controllers/MovieReviewController";
 import CloudinaryController from "./controllers/CloudinaryController";
 import ReviewLikeController from "./controllers/ReviewLikeController";
 import FollowController from "./controllers/FollowController";
+import AdminController from "./controllers/AdminController";
+import SuperController from "./controllers/SuperController";
+import MovieLikeController from "./controllers/MovieLikeController";
+import MovieStatsController from "./controllers/MovieStatsController";
 const cors = require("cors");
 const session = require("express-session");
 
@@ -60,8 +64,18 @@ const movieReviewController = MovieReviewController.getInstance(app);
 const cloudinaryController = CloudinaryController.getInstance(app);
 const reviewLikeController = ReviewLikeController.getInstance(app);
 const followController = FollowController.getInstance(app);
+const adminController = AdminController.getInstance(app);
+const superController = SuperController.getInstance(app);
+const movieLikeController = MovieLikeController.getInstance(app);
+const movieStatsController = MovieStatsController.getInstance(app);
 
 app.use(LogError);
 app.use(ErrorHandler);
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);
+import UserDao from "./daos/UserDao";
+
+const userDao = UserDao.getInstance();
+userDao.findAllUsers().then((us) => {
+
+})

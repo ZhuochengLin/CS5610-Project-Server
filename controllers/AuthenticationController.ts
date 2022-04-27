@@ -8,7 +8,8 @@ import {
 } from "../errors/CustomErrors";
 import AdminDao from "../daos/AdminDao";
 import User from "../models/User";
-import {ADMIN, USER} from "../utils/constants";
+import {ADMIN, SUPER, USER} from "../utils/constants";
+import SuperDao from "../daos/SuperDao";
 
 const bcrypt = require('bcrypt');
 
@@ -17,6 +18,7 @@ export default class AuthenticationController {
     private static authenticationController: AuthenticationController | null = null;
     private static userDao: UserDao = UserDao.getInstance();
     private static adminDao: AdminDao = AdminDao.getInstance();
+    private static superDao: SuperDao = SuperDao.getInstance();
 
     public static getInstance = (app: Express) => {
         if (AuthenticationController.authenticationController === null) {
@@ -54,8 +56,12 @@ export default class AuthenticationController {
                 next(new IncorrectCredentialError());
                 return;
             }
+            if (role === SUPER && !await AuthenticationController.isSuper(username)) {
+                next(new IncorrectCredentialError());
+                return;
+            }
             existingUser.password = "";
-            existingUser.role = role === ADMIN ? ADMIN : USER;
+            existingUser.role = role === ADMIN || role === SUPER ? role : USER;
             // @ts-ignore
             req.session['profile'] = existingUser;
             // @ts-ignore
@@ -143,6 +149,11 @@ export default class AuthenticationController {
     public static isAdmin = async (uname: string): Promise<boolean> => {
         const isAdmin = await AuthenticationController.adminDao.findAdmin(uname);
         return !!isAdmin;
+    }
+
+    public static isSuper = async (uname: string): Promise<boolean> => {
+        const isSuper = await AuthenticationController.superDao.findSuper(uname);
+        return !!isSuper;
     }
 
 };

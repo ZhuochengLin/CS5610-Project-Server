@@ -47,6 +47,10 @@ export default class FollowController {
             next(new InvalidInputError("Received invalid id"));
             return;
         }
+        if (userA === userB) {
+            next(new InvalidInputError("You cannot follow yourself."));
+            return;
+        }
         const userAProfile = await FollowController.userDao.findUserById(userA);
         const userBProfile = await FollowController.userDao.findUserById(userB)
         if (!userAProfile || !userBProfile) {
