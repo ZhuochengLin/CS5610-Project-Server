@@ -38,10 +38,6 @@ export default class FollowController {
             next(e)
             return;
         }
-        if (userA === MY) {
-            next(new InvalidInputError("Admin account cannot create movie lists"))
-            return;
-        }
         const userB = req.params.uidb;
         if (!ObjectId.isValid(userA) || !ObjectId.isValid(userB)) {
             next(new InvalidInputError("Received invalid id"));

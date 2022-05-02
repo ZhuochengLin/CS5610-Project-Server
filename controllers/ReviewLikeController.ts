@@ -42,10 +42,6 @@ export default class ReviewLikeController {
             next(e)
             return;
         }
-        if (userId === MY) {
-            next(new InvalidInputError("Admin account cannot likes review"))
-            return;
-        }
         const reviewId = req.params.rid;
         if (!ObjectId.isValid(userId) || !ObjectId.isValid(reviewId)) {
             next(new InvalidInputError("Received invalid id"));
