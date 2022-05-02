@@ -8,7 +8,7 @@ import {
 } from "../errors/CustomErrors";
 import AdminDao from "../daos/AdminDao";
 import User from "../models/User";
-import {ADMIN, SUPER, USER} from "../utils/constants";
+import {ADMIN, MY, SUPER, USER} from "../utils/constants";
 import SuperDao from "../daos/SuperDao";
 
 const bcrypt = require('bcrypt');
@@ -139,7 +139,7 @@ export default class AuthenticationController {
 
     public static getUserId = async (req: Request, profile: User): Promise<string> => {
         const isAdmin = await AuthenticationController.adminDao.findAdmin(profile.username);
-        if (isAdmin) {
+        if (isAdmin && req.params.uid !== MY) {
             return req.params.uid;
         } else {
             return profile._id;

@@ -42,10 +42,6 @@ export default class MovieLikeController {
             next(e)
             return;
         }
-        if (userId === MY) {
-            next(new InvalidInputError("Admin account cannot likes review"))
-            return;
-        }
         const movieId = req.params.mid;
         if (!ObjectId.isValid(userId)) {
             next(new InvalidInputError("Received invalid id"));

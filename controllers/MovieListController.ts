@@ -41,10 +41,6 @@ class MovieListController {
             next(e)
             return;
         }
-        if (userId === MY) {
-            next(new InvalidInputError("Admin account cannot create movie lists"))
-            return;
-        }
         if (!ObjectId.isValid(userId)) {
             next(new InvalidInputError("Received invalid id"));
             return;
@@ -140,10 +136,6 @@ class MovieListController {
             userId = await AuthenticationController.getUserId(req, profile);
         } catch (e) {
             next(e)
-            return;
-        }
-        if (userId === MY) {
-            next(new InvalidInputError("Admin account does not have movie lists."))
             return;
         }
         const listId = req.params.lid;
